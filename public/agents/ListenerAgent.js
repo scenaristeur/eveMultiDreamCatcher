@@ -360,8 +360,8 @@ ListenerAgent.prototype.getUsernameColor = function (username) {
 	var me = this;
 	// Compute hash code
 	var hash = 7;
-	for (var i = 0; i < me.username.length; i++) {
-		hash = me.username.charCodeAt(i) + (hash << 5) - hash;
+	for (var i = 0; i < username.length; i++) {
+		hash = username.charCodeAt(i) + (hash << 5) - hash;
 	}
 	// Calculate color
 	var index = Math.abs(hash % me.COLORS.length);
