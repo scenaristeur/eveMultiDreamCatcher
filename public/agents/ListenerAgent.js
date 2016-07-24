@@ -341,10 +341,11 @@ ListenerAgent.prototype.addMessageElement = function (el, options) {
 	}
 	if (options.prepend) {
 		me.$messages.prepend($el);
+			me.$messages[0].scrollTop = 0;
 		} else {
 		me.$messages.append($el);
+			me.$messages[0].scrollTop = me.$messages[0].scrollHeight;
 	}
-	me.$messages[0].scrollTop = me.$messages[0].scrollHeight;
 };
 
 
