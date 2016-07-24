@@ -1,6 +1,7 @@
 console.log("Lancement de l'application");
 
 
+
 // DEMARRAGE DES AGENTS
 
 
@@ -28,7 +29,3 @@ var agentMain = new MainAgent('mainAgent');
 agentMain.send('agent1', 'Hello AGENT1');
 var agentSocket = new SocketAgent('socketAgent');
 console.log(agentSocket.getSocket());
-//var agentP5 = new P5Agent('p5Agent');
-
-//agentSocket.send('guiAgent', 'Salut guiAgent!');
-//agentP5.send('guiAgent', 'Salut guiAgent');

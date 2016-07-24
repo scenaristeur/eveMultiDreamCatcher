@@ -33,26 +33,14 @@ SocketAgent.prototype.sayHello = function(to) {
 	* @param {*} message       Received message, a JSON object (often a string)
 */
 SocketAgent.prototype.receive = function(from, message) {
-    console.log(from + ' said: ' + JSON.stringify(message) + '<br>');
-	
-	
 	console.log(message);
 	switch(message.action) {
-		case "emit":
-        console.log(message.data);
+		case "emit" :
 		this.socket.emit(message.channel,message.data);
-		
         break;
-		
-		default:
+		default :
         console.log("non traite par "+this);
 		console.log(message);
-		/*  if (message.indexOf('Hello') === 0) {
-			// reply to the greeting
-			this.send(from, 'Hi ' + from + ', nice to meet you!');
-		}*/
-		
-		
 	}
 };
 
@@ -60,23 +48,20 @@ SocketAgent.prototype.getSocket = function(){
 	return this.socket;
 };
 
-SocketAgent.prototype.initSocket=function(){
-	var me=this;
-	switchRoom=function(room){
+SocketAgent.prototype.initSocket = function(){
+	var me = this;
+	switchRoom = function(room){
 		me.socket.emit('switchRoom', room);
 	}
 	
-	
-	me.socket.on('connect', function(){
-		// call the server-side function 'adduser' and send one parameter (value of prompt)
-		me.socket.emit('adduser', prompt("What's your name?"));
-	});
-	
 	// listener, whenever the server emits 'updatechat', this updates the chat body
 	me.socket.on('updatechat', function (username, data) {
-		$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+		console.log("update chat");
+		data2send = { action : "log",
+			message : username + ' : '+data,
+		};
+		me.send('listenerAgent', data2send);
 	});
-	console.log(me);
 	// listener, whenever the server emits 'updaterooms', this updates the room the client is in
 	me.socket.on('updaterooms', function(rooms, current_room) {
 		$('#rooms').empty();
@@ -90,8 +75,94 @@ SocketAgent.prototype.initSocket=function(){
 		});
 	});
 	
+	// Whenever the server emits 'login', log the login message
+	me.socket.on('login', function (data) {
+		data2send = { action : "setAttribute",
+			attribut : "connected",
+			valeur : true
+		};
+		me.send('listenerAgent', data2send);
+		var triplets = data.triplets;
+		// Display the welcome message
+		var message = "Welcome to DreamCatcher (Smag0) Socket.IO Chat";
+		data2send = { action : "log",
+			message : message,
+			prepend : true
+		};
+		me.send('listenerAgent', data2send);
+		data2send = { action : "addParticipantsMessage",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+		
+		for (triplet of triplets){
+			/* creer agent statement
+				var newStatement = new Statement(triplet.sujet, triplet.propriete, triplet.objet); 
+				newStatement.add2Statements();
+			*/
+		}
+		agentListener.$sujetInput.attr("placeholder", agentListener.username);
+		agentListener.$proprieteInput.attr("placeholder", "type");
+		agentListener.$objetInput.attr("placeholder", "Joueur");
+	});
+	
+	// Whenever the server emits 'new message', update the chat body
+	me.socket.on('new message', function (data) {
+		console.log("retour new message");
+		console.log(data);
+		var options = {};
+		options.prepend = true;
+		data2send = { action : "addChatMessage",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+	});
+	
+	// Whenever the server emits 'user joined', log it in the chat body
+	me.socket.on('user joined', function (data) {
+		data2send = { action : "log",
+			message : data.username + ' joined'
+		};
+		me.send('listenerAgent', data2send);
+		data2send = { action : "addParticipantsMessage",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+		/* creer agent statement 
+			var newStatement = new Statement(data.username, "type", "Joueur"); 
+		newStatement.add2Statements();*/
+	});
+	
+	// Whenever the server emits 'user left', log it in the chat body
+	me.socket.on('user left', function (data) {
+		data2send = { action : "log",
+			message : data.username + ' left'
+		};
+		me.send('listenerAgent', data2send);
+		data2send = { action : "addParticipantsMessage",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+		data2send = { action : "removeChatTyping",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+	});
+	
+	// Whenever the server emits 'typing', show the typing message
+	me.socket.on('typing', function (data) {
+		data2send = { action : "addChatTyping",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+	});
+	
+	// Whenever the server emits 'stop typing', kill the typing message
+	me.socket.on('stop typing', function (data) {
+		data2send = { action : "removeChatTyping",
+			message : data
+		};
+		me.send('listenerAgent', data2send);
+	});
+	
 };
-
-SocketAgent.prototype.switchRoom=function(room){
-	this.socket.emit('switchRoom', room);
-}
