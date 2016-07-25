@@ -29,3 +29,8 @@ var agentMain = new MainAgent('mainAgent');
 agentMain.send('agent1', 'Hello AGENT1');
 var agentSocket = new SocketAgent('socketAgent');
 console.log(agentSocket.getSocket());
+var agentP5js = new P5jsAgent('p5jsAgent');
+//var agentGraphe = new GrapheP5jsAgent('grapheAgent');
+agentP5js.send('agent1', 'Hello AGENT1');
+//agentGraphe.send('agent1', 'Hello AGENT1');
+

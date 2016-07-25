@@ -33,7 +33,7 @@ SocketAgent.prototype.sayHello = function(to) {
 	* @param {*} message       Received message, a JSON object (often a string)
 */
 SocketAgent.prototype.receive = function(from, message) {
-	console.log(message);
+	//	console.log(message);
 	switch(message.action) {
 		case "emit" :
 		this.socket.emit(message.channel,message.data);
@@ -100,6 +100,14 @@ SocketAgent.prototype.initSocket = function(){
 				var newStatement = new Statement(triplet.sujet, triplet.propriete, triplet.objet); 
 				newStatement.add2Statements();
 			*/
+			//	console.log(triplet);
+			var statement={
+				sujet:triplet.sujet,
+				propriete:triplet.propriete,
+				objet:triplet.objet
+			};
+			var statementGraphe = new StatementAgent(statement);
+			statementGraphe.send('agent1', 'Hello AGENT1');
 		}
 		agentListener.$sujetInput.attr("placeholder", agentListener.username);
 		agentListener.$proprieteInput.attr("placeholder", "type");
@@ -111,58 +119,59 @@ SocketAgent.prototype.initSocket = function(){
 		console.log("retour new message");
 		console.log(data);
 		var options = {};
-		options.prepend = true;
-		data2send = { action : "addChatMessage",
-			message : data
-		};
-		me.send('listenerAgent', data2send);
+	options.prepend = true;
+	data2send = { action : "addChatMessage",
+	message : data
+	};
+	me.send('listenerAgent', data2send);
 	});
 	
 	// Whenever the server emits 'user joined', log it in the chat body
 	me.socket.on('user joined', function (data) {
-		data2send = { action : "log",
-			message : data.username + ' joined'
-		};
-		me.send('listenerAgent', data2send);
-		data2send = { action : "addParticipantsMessage",
-			message : data
-		};
-		me.send('listenerAgent', data2send);
-		/* creer agent statement 
-			var newStatement = new Statement(data.username, "type", "Joueur"); 
-		newStatement.add2Statements();*/
+	data2send = { action : "log",
+	message : data.username + ' joined'
+	};
+	me.send('listenerAgent', data2send);
+	data2send = { action : "addParticipantsMessage",
+	message : data
+	};
+	me.send('listenerAgent', data2send);
+	/* creer agent statement 
+	var newStatement = new Statement(data.username, "type", "Joueur"); 
+	newStatement.add2Statements();*/
 	});
 	
 	// Whenever the server emits 'user left', log it in the chat body
 	me.socket.on('user left', function (data) {
-		data2send = { action : "log",
-			message : data.username + ' left'
-		};
-		me.send('listenerAgent', data2send);
-		data2send = { action : "addParticipantsMessage",
-			message : data
-		};
-		me.send('listenerAgent', data2send);
-		data2send = { action : "removeChatTyping",
-			message : data
-		};
-		me.send('listenerAgent', data2send);
+	data2send = { action : "log",
+	message : data.username + ' left'
+	};
+	me.send('listenerAgent', data2send);
+	data2send = { action : "addParticipantsMessage",
+	message : data
+	};
+	me.send('listenerAgent', data2send);
+	data2send = { action : "removeChatTyping",
+	message : data
+	};
+	me.send('listenerAgent', data2send);
 	});
 	
 	// Whenever the server emits 'typing', show the typing message
 	me.socket.on('typing', function (data) {
-		data2send = { action : "addChatTyping",
-			message : data
-		};
-		me.send('listenerAgent', data2send);
+	data2send = { action : "addChatTyping",
+	message : data
+	};
+	me.send('listenerAgent', data2send);
 	});
 	
 	// Whenever the server emits 'stop typing', kill the typing message
 	me.socket.on('stop typing', function (data) {
-		data2send = { action : "removeChatTyping",
-			message : data
-		};
-		me.send('listenerAgent', data2send);
+	data2send = { action : "removeChatTyping",
+	message : data
+	};
+	me.send('listenerAgent', data2send);
 	});
 	
-};
+	};
+		

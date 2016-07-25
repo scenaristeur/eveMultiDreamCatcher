@@ -37,6 +37,7 @@ function ListenerAgent(id) {
 	this.lastTypingTime;
 	this.$currentInput = this.$usernameInput.focus();
 	this.addListeners();
+	
 }
 
 // extend the eve.Agent prototype
@@ -183,7 +184,6 @@ ListenerAgent.prototype.updateTyping = function (){
 			var typingTimer = (new Date()).getTime();
 			var timeDiff = typingTimer - me.lastTypingTime;
 			if (timeDiff >= me.TYPING_TIMER_LENGTH && me.typing) {
-				//socket.emit('stop typing');
 				data = { action : "emit",
 					channel : "stop typing"
 				};
@@ -226,7 +226,7 @@ ListenerAgent.prototype.sendMessage = function () {
 			message : message
 		});
 		// tell server to execute 'new message' and send along one parameter
-		console.log("NEW MESSAGE");
+		//console.log("NEW MESSAGE");
 		data2send = { action : "emit",
 			channel : "new message",
 			data : message
@@ -278,6 +278,13 @@ ListenerAgent.prototype.addChatMessage = function (data, options) {
 			var newStatement = new Statement(sujet, propriete, objet);
 			newStatement.add2Statements();
 		*/
+		var statement={
+		sujet:sujet,
+			propriete:propriete,
+			objet:objet
+			};
+	var statementGraphe = new StatementAgent(statement);
+	statementGraphe.send('agent1', 'Hello AGENT1');
 	} 
 	
 	var $usernameDiv = $('<span class="username"/>')

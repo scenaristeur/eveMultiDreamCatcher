@@ -139,7 +139,7 @@ GuiAgent.prototype.makeUi = function(){
 	
 	var textCanvas = document.createElement("CANVAS");
 	textCanvas.setAttribute("id","textCanvas");
-	textCanvas.style.height="20px";
+	textCanvas.style.height=40;
 	
 	document.body.appendChild(textCanvas);
 	
